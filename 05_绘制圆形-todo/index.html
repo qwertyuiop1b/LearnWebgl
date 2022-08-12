@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>绘制圆形</title>
+  <style>
+    *{margin: 0; padding: 0;}
+    html,body{overflow: hidden;}
+  </style>
+</head>
+<body>
+  <script type="module">
+    import webglHelper from "../utils/webgl-helper.js"
+    const canvas = document.createElement("canvas")
+
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+    
+    const gl = canvas.getContext("webgl")
+    let aPosition = null
+    const aPostionList = []
+
+    Promise.all([
+      webglHelper.loadGLSL("vert.glsl"),
+      webglHelper.loadGLSL("frag.glsl")
+    ]).then(([vertSrc, fragSrc]) => {
+
+      const vertShader = webglHelper.createShader(gl, gl.VERTEX_SHADER, vertSrc)
+      const fragShader = webglHelper.createShader(gl, gl.FRAGMENT_SHADER, fragSrc)
+      const program = webglHelper.createProgram(gl, vertShader, fragShader)
+
+      gl.useProgram(program)
+
+      aPosition = gl.getAttribLocation(program, "aPosition")
+
+      
+      
+      document.body.appendChild(canvas)
+
+    })
+
+
+
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+      gl.viewport(0, 0, canvas.width, canvas.height)
+    })
+
+
+
+
+
+  </script>
+</body>
+</html>

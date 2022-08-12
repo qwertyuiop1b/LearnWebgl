@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>绘制三角形</title>
+  <style>
+    *{margin: 0; padding: 0;}
+    html,body{overflow: hidden;}
+  </style>
+</head>
+<body>
+  <script type="module">
+    import webglHelper from "../utils/webgl-helper.js"
+    const canvas = document.createElement("canvas")
+
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+    
+    const gl = canvas.getContext("webgl")
+
+    Promise.all([
+      webglHelper.loadGLSL("vert.glsl"),
+      webglHelper.loadGLSL("frag.glsl")
+    ]).then(([vertSrc, fragSrc]) => {
+      const vertShader = webglHelper.createShader(gl, gl.VERTEX_SHADER, vertSrc)
+      const fragShader = webglHelper.createShader(gl, gl.FRAGMENT_SHADER, fragSrc)
+      const program = webglHelper.createProgram(gl, vertShader, fragShader)
+
+      gl.useProgram(program)
+      const aPosition = gl.getAttribLocation(program, "aPosition")
+
+      const buffer = gl.createBuffer()
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+        0,0,0,
+        0,0.5,0,
+        0.5,0,0
+      ]), gl.STATIC_DRAW)
+  
+      gl.enableVertexAttribArray(aPosition)
+      gl.vertexAttribPointer(aPosition, 3, gl.FLOAT, false, 0, 0)
+      gl.drawArrays(gl.TRIANGLES, 0, 3)
+      
+      document.body.appendChild(canvas)
+
+    })
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+      gl.viewport(0, 0, canvas.width, canvas.height)
+    })
+
+  </script>
+</body>
+</html>
