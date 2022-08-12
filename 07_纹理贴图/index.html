@@ -43,6 +43,51 @@
 
       gl.useProgram(program)
 
+      const uSampler = gl.getUniformLocation(program, "uSampler")
+      const aPosition = gl.getAttribLocation(program, "aPosition")
+      const aTexCoord = gl.getAttribLocation(program, "aTexCoord")
+
+      gl.enableVertexAttribArray(aPosition)
+      gl.enableVertexAttribArray(aTexCoord)
+
+      const positions = [
+        -0.2, 0.2, 0, 1,
+        0.2, 0.2, 1, 1,
+        0.2, -0.2, 1, -1,
+
+        -0.2, 0.2, 0, 1,
+        -0.2, -0.2, 0, 0,
+        0.2, -0.2, 1, 0,
+      ]
+      const typeArray = new Float32Array(positions)
+      const buffer = gl.createBuffer()
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+      gl.bufferData(gl.ARRAY_BUFFER, typeArray, gl.STATIC_DRAW)
+
+      gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, typeArray.BYTES_PER_ELEMENT * 4, 0)
+      gl.vertexAttribPointer(aTexCoord, 2, gl.FLOAT, false, typeArray.BYTES_PER_ELEMENT * 4, typeArray.BYTES_PER_ELEMENT * 2)
+
+      const img = new Image()
+      img.src = "/assets/imgs/wave.jpg"
+      img.onload = () => {
+        // 激活texture
+        gl.activeTexture(gl.TEXTURE0)
+        const texture = gl.createTexture()
+        gl.bindTexture(gl.TEXTURE_2D, texture)
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img)
+
+        // 设置参数
+        gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+        gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+        gl.uniform1i(uSampler, 0)
+
+        gl.clearColor(0, 0, 0, 1)
+        gl.clear(gl.COLOR_BUFFER_BIT)
+        gl.drawArrays(gl.TRIANGLES, 0, positions.length / 4)
+
+
+      }
+
 
       document.body.appendChild(canvas)
     })
@@ -54,8 +99,6 @@
       canvas.height = window.innerHeight
       gl.viewport(0, 0, canvas.width, canvas.height)
     })
-
-
 
 
   </script>
