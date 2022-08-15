@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>绘制立方体</title>
+  <title>环境光</title>
   <style>
     * {
       margin: 0;
@@ -83,6 +83,9 @@
       const aPosition = gl.getAttribLocation(program, "aPosition")
       const uMatrix = gl.getUniformLocation(program, "uMatrix")
       const aColor = gl.getAttribLocation(program, "aColor")
+      const uAmbientColor = gl.getUniformLocation(program, "uAmbientColor")
+      const uAmbientIntensity = gl.getUniformLocation(program, "uAmbientIntensity")
+
 
       const buffer = gl.createBuffer()
       const typeArray = new Float32Array(positions)
@@ -115,8 +118,10 @@
       let xAngle = 0;
       let yAngle = 0;
       let tmpMatrix = matrix.identity();
+      let intensity = 0.3
 
       function render() {
+
         xAngle += 1;
         yAngle += 1;
         //先绕 Y 轴旋转矩阵。
@@ -127,6 +132,9 @@
         matrix.multiply(projectionMatrix, dstMatrix, dstMatrix);
 
         gl.uniformMatrix4fv(uMatrix, false, dstMatrix);
+        gl.uniform3fv(uAmbientColor, new Float32Array([1.0,1.0,1.0]))
+        gl.uniform1f(uAmbientIntensity, intensity)
+
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
         if (!playing) {
@@ -144,6 +152,18 @@
         render();
       })
 
+      window.addEventListener("keydown", (evt) => {
+      if (evt.keyCode === 40) {
+        // 下
+        intensity -= 0.01
+
+      } else if (evt.keyCode === 38) {
+        // 上
+        intensity += 0.01
+
+      }
+    })
+
     })
 
     window.addEventListener("resize", () => {
@@ -151,6 +171,8 @@
       canvas.height = window.innerHeight
       gl.viewport(0, 0, canvas.width, canvas.height)
     })
+
+
 
 
 
