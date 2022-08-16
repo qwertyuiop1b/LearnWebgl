@@ -1,12 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>漫反射</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      overflow: hidden;
+    }
+  </style>
 </head>
+
 <body>
-  
+  <script src="../utils/vector3.js"></script>
+  <script src="../utils/webgl-matrix.js"></script>
+  <script src="../utils/math.js"></script>
+  <script type="module">
+    import webglHelper from "../utils/webgl-helper.js"
+    const canvas = document.createElement("canvas")
+
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+
+    const gl = canvas.getContext("webgl")
+
+
+    Promise.all([
+      webglHelper.loadGLSL("vert.glsl"),
+      webglHelper.loadGLSL("frag.glsl")
+    ]).then(([vertSrc, fragSrc]) => {
+
+      const vertShader = webglHelper.createShader(gl, gl.VERTEX_SHADER, vertSrc)
+      const fragShader = webglHelper.createShader(gl, gl.FRAGMENT_SHADER, fragSrc)
+      const program = webglHelper.createProgram(gl, vertShader, fragShader)
+
+      gl.useProgram(program)
+
+      const cubeObject = {
+        vertices: [
+          0.5, 0.5, 0.5,
+          0.5, 0.5, -0.5,
+          0.5, -0.5, 0.5,
+          0.5, -0.5, -0.5,
+          -0.5, 0.5, -0.5,
+          -0.5, 0.5, 0.5,
+          -0.5, -0.5, -0.5,
+          -0.5, -0.5, 0.5,
+          -0.5, 0.5, -0.5,
+          0.5, 0.5, -0.5,
+          -0.5, 0.5, 0.5,
+          0.5, 0.5, 0.5,
+          -0.5, -0.5, 0.5,
+          0.5, -0.5, 0.5,
+          -0.5, -0.5, -0.5,
+          0.5, -0.5, -0.5,
+          -0.5, 0.5, 0.5,
+          0.5, 0.5, 0.5,
+          -0.5, -0.5, 0.5,
+          0.5, -0.5, 0.5,
+          0.5, 0.5, -0.5,
+          -0.5, 0.5, -0.5,
+          0.5, -0.5, -0.5,
+          -0.5, -0.5, -0.5,
+        ],
+        normals: [
+          1, 0, 0, 1, 0, 0,
+          1, 0, 0, 1, 0, 0,
+          -1, 0, 0, -1, 0, 0,
+          -1, 0, 0, -1, 0, 0,
+          0, 1, 0, 0, 1, 0,
+          0, 1, 0, 0, 1, 0,
+          0, -1, 0, 0, -1, 0,
+          0, -1, 0, 0, -1, 0,
+          0, 0, 1, 0, 0, 1,
+          0, 0, 1, 0, 0, 1,
+          0, 0, -1, 0, 0, -1,
+          0, 0, -1, 0, 0, -1,
+        ],
+        texcoords: [
+          0, 1, 1, 1, 0, 0, 1, 0,
+          0, 1, 1, 1, 0, 0, 1, 0,
+          0, 1, 1, 1, 0, 0, 1, 0,
+          0, 1, 1, 1, 0, 0, 1, 0,
+          0, 1, 1, 1, 0, 0, 1, 0,
+          0, 1, 1, 1, 0, 0, 1, 0,
+        ],
+        indices: [
+          0, 2, 1, 2, 3, 1,
+          4, 6, 5, 6, 7, 5,
+          8, 10, 9, 10, 11, 9,
+          12, 14, 13, 14, 15, 13,
+          16, 18, 17, 18, 19, 17,
+          20, 22, 21, 22, 23, 21,
+        ],
+      };
+
+
+      
+
+
+
+
+    })
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+      gl.viewport(0, 0, canvas.width, canvas.height)
+    })
+
+
+
+
+
+
+  </script>
 </body>
+
 </html>
