@@ -7,7 +7,5 @@ uniform float uAmbientIntensity;
 
 void main(){
   vec3 ambient = uAmbientColor * uAmbientIntensity;
-
-
   gl_FragColor = vColor * vec4(ambient, 1.0);
 }
